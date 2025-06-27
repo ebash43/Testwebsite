@@ -1,37 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Test</title>
+  <title>Subscription Form</title>
 </head>
 <body>
-  <form id="form">
-    <input name="fullname" placeholder="Full Name" required><br>
-    <input name="contact" placeholder="Contact" required><br>
-    <input name="email" placeholder="Email" required><br>
-    <input name="address" placeholder="Address" required><br>
-    <input name="plan" placeholder="Plan" required><br>
-    <button>Submit</button>
+  <h2>Subscription Form</h2>
+  <form id="subscription-form">
+    <label>Full Name: <input type="text" name="fullname" required></label><br>
+    <label>Contact Number: <input type="text" name="contact" required></label><br>
+    <label>Email Address: <input type="email" name="email" required></label><br>
+    <label>Home Address: <input type="text" name="address" required></label><br>
+    <label>Subscription Plan: <input type="text" name="plan" required></label><br>
+    <button type="submit">Submit</button>
   </form>
 
   <script>
-    document.getElementById('form').addEventListener('submit', async (e) => {
+    const form = document.getElementById("subscription-form");
+    form.addEventListener("submit", function (e) {
       e.preventDefault();
-      const data = Object.fromEntries(new FormData(e.target).entries());
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => { data[key] = value });
 
-      try {
-        const res = await fetch('https://script.google.com/macros/s/AKfycbzAwngdOEPJjIRabi-TOEpwwlwPI5DxAx_1bwIafwi9vhDZ8WQyNA7287fhRebKZ5zJJQ/exec', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-        console.log('Server response:', result);
-        alert(result.result === 'success' ? 'Submitted!' : 'Error: ' + result.message);
-      } catch (error) {
-        console.error('Fetch error:', error);
-        alert('Error submitting form.');
-      }
+      fetch("https://script.google.com/macros/s/AKfycbyb1QYdWjL14Mw4AjgfBms_oru7h1Tro_kOvOw9ZE_xNLRLDNOnDRtkYtOpk-oXTN8/exec", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(res => res.json())
+      .then(response => {
+        alert("Server replied: " + JSON.stringify(response));
+      })
+      .catch(err => {
+        alert("Error submitting form.");
+        console.error(err);
+      });
     });
   </script>
 </body>
